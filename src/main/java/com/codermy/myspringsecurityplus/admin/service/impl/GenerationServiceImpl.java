@@ -52,9 +52,8 @@ public class GenerationServiceImpl implements GenerationService {
 
         try {
             List<MyGeneration> generationList = PoiUtils.readExcel(file, (lineNum, rows) -> {
-                int i = 0;
-                String name = rows[i++]; // 名称
-                String gene = rows[i++]; // 基因序列
+                String name = rows[5]; // 名称
+                String gene = rows[9].replace("[", "").replace("]", ""); // 基因序列
 
                 MyGeneration product = new MyGeneration();
                 product.setName(name);

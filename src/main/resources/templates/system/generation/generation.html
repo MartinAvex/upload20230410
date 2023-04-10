@@ -61,7 +61,12 @@
 			defaultToolbar: [{
 				layEvent: 'refresh',
 				icon: 'layui-icon-refresh',
-			}, 'filter', 'print', 'exports']
+			}, 'filter', 'print', 'exports'],
+			done: function (value, date, endDate) {
+				//重新绑定，upload方法
+				bindTableToolbarFunction()
+			}
+
 		});
 
 		upload.render({
@@ -155,6 +160,45 @@
 
 		window.refresh = function (param) {
 			table.reload('generation-table');
+		}
+
+		//table.reload()之后，toolbar按钮失效，	toolbar事件重新绑定
+		function bindTableToolbarFunction(){
+			let upload = layui.upload
+
+			table.on('toolbar(generation-table)', function (obj) {
+				if (obj.event === 'add') {
+					window.add();
+				} else if (obj.event === 'refresh') {
+					window.refresh();
+				} else if (obj.event === 'batchRemove') {
+					window.batchRemove(obj);
+				} else if (obj.event === 'download') {
+					window.download(obj);
+				}
+			});
+
+			$('.download-btn').click(function() {
+				window.location.href = '/api/generation/download'
+			});
+
+			upload.render({
+				elem: "#importData",//导入id
+				url: "/api/generation/importData",
+				accept: "file",
+				exts: 'xls|xlsx|xlsm|xlt|xltx|xltm',
+				before: function(obj) {
+					layer.msg('文件上传中...', {
+						icon: 16,
+						shade: 0.01,
+						time: 0
+					})
+				},
+				done: function (res) {
+					layer.close(layer.msg());//关闭上传提示窗口
+					table.reload('generation-table');
+				}
+			});
 		}
 	})
 </script>

@@ -15,10 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * excel poi 通用工具类
@@ -62,6 +59,9 @@ public class PoiUtils {
             for (int rowNum = firstRowNum + 1; rowNum <= lastRowNum; rowNum++) {
                 // 获得当前行
                 Row row = sheet.getRow(rowNum);
+                if (isRowEmpty(row)) { //空白行
+                    continue;
+                }
                 // 获得当前行的开始列
                 int firstCellNum = row.getFirstCellNum();
                 String[] cellDataArr = new String[lastCellNum];
@@ -283,6 +283,18 @@ public class PoiUtils {
          */
         T execute(int lineNum, String[] rows);
 
+    }
+
+    private static boolean isRowEmpty(Row row) {
+        if (Objects.isNull(row)) {
+            return true;
+        }
+        for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
+            Cell cell = row.getCell(c);
+            if (cell != null && cell.getCellType() != Cell.CELL_TYPE_BLANK)
+                return false;
+        }
+        return true;
     }
 
 
