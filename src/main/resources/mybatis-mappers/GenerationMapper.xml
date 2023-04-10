@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codermy.myspringsecurityplus.admin.dao.GenerationDao">
+
+
+	<select id="getList" resultType="com.codermy.myspringsecurityplus.admin.dto.GenerationDto">
+		select name,generation from my_generation
+	</select>
+    <select id="getGenerationList" resultType="com.codermy.myspringsecurityplus.admin.entity.MyGeneration">
+		select id,name,generation from my_generation
+	</select>
+
+	<insert id="batchSave" keyProperty="id" useGeneratedKeys="true">
+		insert into my_generation(name, generation) values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.name},#{item.generation})
+		</foreach>
+	</insert>
+
+	<delete id="deleteHistory" parameterType="integer">
+		delete from my_generation
+	</delete>
+
+</mapper>

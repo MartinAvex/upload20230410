@@ -5,12 +5,12 @@
 	<title></title>
 	<header th:replace="header::html"></header>
 	<style>
-		#deptTree{
+		/*#deptTree{
 			width: 100% !important;
 			height: -webkit-calc(100vh - 130px);
 			height: -moz-calc(100vh - 130px);
 			height: calc(100vh - 130px);
-		}
+		}*/
 	</style>
 </head>
 <body class="pear-container">
@@ -40,7 +40,7 @@
 	</div>
 </div>
 <div class="layui-row layui-col-space15">
-	<div class="layui-col-md3">
+	<!--<div class="layui-col-md3">
 		<div class="layui-card">
 			<div class="layui-card-body">
 				<div id="organizationContent" style="overflow: auto">
@@ -48,8 +48,8 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="layui-col-md9">
+	</div>-->
+	<div class="layui-col-md12">
 		<div class="layui-card">
 			<div class="layui-card-body">
 				<table id="user-table" lay-filter="user-table"></table>
@@ -99,7 +99,7 @@
 			]
 		]
 
-		var DTree = dtree.render({
+		/*var DTree = dtree.render({
 			elem: "#deptTree",
 			initLevel: "2", //默认展开层级为1
 			line: true, // 有线树
@@ -112,7 +112,7 @@
 			checkbar: false,  //开启复选框
 			// url: "/PearAdmin/admin/data/organizationtree.json",
 
-		});
+		});*/
 
 		var tableIns =table.render({
 			elem: '#user-table',
@@ -128,7 +128,7 @@
 		});
 
 		// 绑定节点点击事件
-		dtree.on("node(deptTree)", function (obj) {
+		/*dtree.on("node(deptTree)", function (obj) {
 			tableIns.reload({
 				page: {
 					curr: 1 //重新从第 1 页开始
@@ -140,7 +140,7 @@
 				, url: '/api/user'//后台做模糊搜索接口路径
 				, method: 'get'
 			});
-		});
+		});*/
 
 		table.on('tool(user-table)', function(obj) {
 			if (obj.event === 'remove') {
