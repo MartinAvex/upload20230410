@@ -17,9 +17,15 @@
 </div>
 
 <script type="text/html" id="generation-toolbar">
-	<button class="layui-btn layui-btn-sm" data-type="import" id="importData" onclick="javascript:return false;">突变数据上传</button>
-	<button type="button" class="layui-btn layui-btn-sm download-btn">突变数据下载</button>
-	<button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove">
+	<button class="layui-btn layui-btn-sm layui-btn" data-type="import" id="importData" onclick="javascript:return false;">
+		<i class="layui-icon layui-icon-upload"></i>
+		突变数据上传
+	</button>
+	<button type="button" class="layui-btn layui-btn-sm download-btn">
+		<i class="layui-icon layui-icon-layim-download"></i>
+		突变数据下载
+	</button>
+	<button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="batchRemove">
 		<i class="layui-icon layui-icon-delete"></i>
 		删除
 	</button>
