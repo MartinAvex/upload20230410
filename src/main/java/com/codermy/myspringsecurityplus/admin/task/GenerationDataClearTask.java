@@ -20,12 +20,10 @@ public class GenerationDataClearTask {
     @Autowired
     private GenerationService generationService;
 
-    @Scheduled(cron = "0 0 0 0/3 * ?")
+    @Scheduled(cron = "0 0 0 0/1 * ?")
     public void handler() {
-        String now = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd 00:00:00"));
+        String now = LocalDate.now().plusDays(-3L).format(DateTimeFormatter.ofPattern("yyyy-MM-dd 00:00:00"));
         generationService.clearDataByDate(now);
     }
-
-
 
 }
