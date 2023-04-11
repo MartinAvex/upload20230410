@@ -4,6 +4,8 @@ import com.codermy.myspringsecurityplus.admin.dto.GenerationDto;
 import com.codermy.myspringsecurityplus.admin.entity.MyGeneration;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -16,7 +18,7 @@ import java.util.List;
 public interface GenerationDao {
 
     List<GenerationDto> getList();
-    List<MyGeneration> getGenerationList(MyGeneration myGeneration);
+    List<MyGeneration> getGenerationList(String start, String end);
 
     int batchSave(List<MyGeneration> myGenerationList);
     int deleteHistory();

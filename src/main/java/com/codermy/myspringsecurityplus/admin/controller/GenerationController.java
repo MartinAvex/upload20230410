@@ -43,14 +43,14 @@ public class GenerationController {
         return "system/generation/generation";
     }
 
-    @GetMapping
+    @RequestMapping
     @ResponseBody
     @ApiOperation(value = "突变列表")
     @PreAuthorize("hasAnyAuthority('generation:list')")
     @MyLog("查询突变数据")
-    public Result<MyGeneration> generationList(PageTableRequest pageTableRequest, MyGeneration myGeneration) {
+    public Result<MyGeneration> generationList(PageTableRequest pageTableRequest, String createDate) {
         pageTableRequest.countOffset();
-        return generationService.getGenerationList(pageTableRequest.getOffset(), pageTableRequest.getLimit(), myGeneration);
+        return generationService.getGenerationList(pageTableRequest.getOffset(), pageTableRequest.getLimit(), createDate);
     }
 
     @PostMapping(value = "/importData", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

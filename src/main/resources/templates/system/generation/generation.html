@@ -6,6 +6,29 @@
 	<header th:replace="header::html"></header>
 </head>
 <body class="pear-container">
+<div class="layui-card">
+	<div class="layui-card-body">
+		<form class="layui-form" action="">
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">时间范围：</label>
+					<div class="layui-input-inline">
+						<input type="text" name="createDate" id="createDate" autocomplete="off" value="" placeholder="请选择时间范围" style="width: 180px;" class="layui-input">
+					</div>
+				</div>
+				<button id="generation-query" class="pear-btn pear-btn-md pear-btn-primary" lay-submit="" lay-filter="generation-query">
+					<i class="layui-icon layui-icon-search"></i>
+					查询
+				</button>
+
+				<button type="reset" class="pear-btn pear-btn-md">
+					<i class="layui-icon layui-icon-refresh"></i>
+					重置
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
 <div class="layui-row layui-col-space15">
 	<div class="layui-col-md12">
 		<div class="layui-card">
@@ -27,27 +50,37 @@
 	</button>
 	<button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="batchRemove">
 		<i class="layui-icon layui-icon-delete"></i>
-		删除
+		删除历史数据
 	</button>
 </script>
 
 <script type="text/html" id="generation-bar">
-	<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></button>
 	<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
 </script>
 <script>
-	layui.use(['table', 'form', 'jquery', 'dtree', 'upload'], function () {
+	layui.use(['table', 'form', 'jquery', 'dtree', 'upload', 'laydate'], function () {
 		let table = layui.table;
 		let form = layui.form;
 		let $ = layui.jquery;
-		let upload = layui.upload
+		let upload = layui.upload;
+		let laydate = layui.laydate;
+
+		laydate.render({
+			elem: '#createDate',
+			type: 'date',
+			range: '~',
+			calendar: true,
+			btns: ['clear', 'confirm', 'now']
+		});
 
 		let cols = [
 			[
 				{type:'checkbox'},
 				{title: '主键', field: 'id', align:'center', width:100},
+				// {title: '主键', field: 'id', align:'center', width:100, style:'display:none'},
 				{title: '姓名', field: 'name', align:'center'},
-				{title: '基因序列', field: 'generation', align:'center'}
+				{title: '基因序列', field: 'generation', align:'center'},
+				{title: '创建时间', field: 'createDate', align:'center', templet: "<div>{{layui.util.toDateString(d.createDate, 'yyyy-MM-dd')}}</div>"}
 			]
 		]
 
@@ -64,8 +97,9 @@
 				icon: 'layui-icon-refresh',
 			}, 'filter'],
 			done: function (value, date, endDate) {
+				// $("[data-field='id']").css('display', 'none');
 				//重新绑定，upload方法
-				bindTableToolbarFunction()
+				bindTableToolbarFunction();
 			}
 
 		});
@@ -73,6 +107,7 @@
 		upload.render({
 			elem: "#importData",//导入id
 			url: "/api/generation/importData",
+			method: "post",
 			accept: "file",
 			exts: 'xls|xlsx|xlsm|xlt|xltx|xltm',
 			before: function(obj) {
@@ -109,17 +144,17 @@
 		});
 		form.on('submit(generation-query)', function(data){
 			var formData = data.field;
-			var name = formData.name;
+			var createDate = formData.createDate;
 			tableIns.reload({
 				page: {
 					curr: 1 //重新从第 1 页开始
-				}
-				, where: {//这里传参  向后台
-					name: name
+				},
+				where: {//这里传参  向后台
+					createDate: createDate
 					//可传多个参数到后台...  ，分隔
-				}
-				, url: '/api/generation'//后台做模糊搜索接口路径
-				, method: 'get'
+				},
+				url: '/api/generation', //后台做模糊搜索接口路径
+				method: 'post'
 			});
 			return false;
 		});

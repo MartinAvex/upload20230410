@@ -57,11 +57,17 @@ mybatis:
   mapper-locations: classpath:/mybatis-mappers/*
   configuration:
     map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
 
 logging:
   file:
     path: src\main\resources\logger\ # logger文件夹需要提前生成
-
+  level:
+    com:
+      codermy:
+        myspringsecurityplus:
+          admin:
+            dao: DEBUG
 jwt:
   tokenHeader: Authorization #JWT存储的请求头
   secret: my-springsecurity-plus #JWT加解密使用的密钥

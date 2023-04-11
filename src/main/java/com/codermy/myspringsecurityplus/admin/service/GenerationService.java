@@ -17,7 +17,7 @@ import java.util.List;
 public interface GenerationService {
 
     List<GenerationDto> getList();
-    Result<MyGeneration> getGenerationList(Integer offectPosition, Integer limit, MyGeneration myGeneration);
+    Result<MyGeneration> getGenerationList(Integer offectPosition, Integer limit, String createDate);
 
     Result<MyGeneration> importData(MultipartFile file);
     Integer batchRemove();

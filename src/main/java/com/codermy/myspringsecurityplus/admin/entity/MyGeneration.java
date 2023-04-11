@@ -5,6 +5,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * @Author: Xavier.wu
@@ -13,7 +16,6 @@ import java.io.Serializable;
  * @Version: 1.0
  */
 @Data
-@NoArgsConstructor
 public class MyGeneration implements Serializable {
 
 
@@ -26,6 +28,9 @@ public class MyGeneration implements Serializable {
 
     private String generation;
 
+    private LocalDate createDate;
 
-
+    public MyGeneration() {
+        createDate = LocalDate.now();
+    }
 }

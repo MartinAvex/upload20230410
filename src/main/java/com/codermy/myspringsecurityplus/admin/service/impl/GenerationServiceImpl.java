@@ -9,12 +9,17 @@ import com.codermy.myspringsecurityplus.common.utils.Result;
 import com.codermy.myspringsecurityplus.common.utils.ResultCode;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,9 +41,15 @@ public class GenerationServiceImpl implements GenerationService {
     }
 
     @Override
-    public Result<MyGeneration> getGenerationList(Integer offectPosition, Integer limit, MyGeneration myGeneration) {
+    public Result<MyGeneration> getGenerationList(Integer offectPosition, Integer limit, String createDate) {
         Page page = PageHelper.offsetPage(offectPosition,limit);
-        List<MyGeneration> list = generationDao.getGenerationList(myGeneration);
+        String start = "",  end = "";
+        if (StringUtils.isNotEmpty(createDate)) {
+            String[] dateArr = createDate.replace(" ", "").split("~");
+            start = dateArr[0];
+            end = dateArr[1];
+        }
+        List<MyGeneration> list = generationDao.getGenerationList(start, end);
         return Result.ok().count(page.getTotal()).data(list).code(ResultCode.TABLE_SUCCESS);
     }
 
@@ -55,10 +66,10 @@ public class GenerationServiceImpl implements GenerationService {
                 String name = rows[5]; // 名称
                 String gene = rows[9].replace("[", "").replace("]", ""); // 基因序列
 
-                MyGeneration product = new MyGeneration();
-                product.setName(name);
-                product.setGeneration(gene);
-                return product;
+                MyGeneration generation = new MyGeneration();
+                generation.setName(name);
+                generation.setGeneration(gene);
+                return generation;
             });
 
             generationDao.batchSave(generationList);

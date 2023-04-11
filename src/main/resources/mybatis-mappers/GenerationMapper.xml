@@ -9,13 +9,20 @@
 		select name,generation from my_generation
 	</select>
     <select id="getGenerationList" resultType="com.codermy.myspringsecurityplus.admin.entity.MyGeneration">
-		select id,name,generation from my_generation
+		select id,name,generation,create_date from my_generation
+		<where>
+			<if test="start != null and start != ''">
+				AND create_date &gt;= CONCAT(#{start}, ' 00:00:00')
+			</if>
+			<if test="end != null and end != ''">
+				AND create_date &lt;= CONCAT(#{end}, ' 00:00:00')
+			</if>
+		</where>
 	</select>
-
 	<insert id="batchSave" keyProperty="id" useGeneratedKeys="true">
-		insert into my_generation(name, generation) values
+		insert into my_generation(name, generation, create_date) values
 		<foreach item="item" index="index" collection="list" separator=",">
-			(#{item.name},#{item.generation})
+			(#{item.name},#{item.generation},#{item.createDate})
 		</foreach>
 	</insert>
 
