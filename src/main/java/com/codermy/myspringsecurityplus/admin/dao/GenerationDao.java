@@ -17,7 +17,7 @@ import java.util.List;
 @Mapper
 public interface GenerationDao {
 
-    List<GenerationDto> getList();
+    List<GenerationDto> getList(String start, String end);
     List<MyGeneration> getGenerationList(String start, String end);
 
     int batchSave(List<MyGeneration> myGenerationList);

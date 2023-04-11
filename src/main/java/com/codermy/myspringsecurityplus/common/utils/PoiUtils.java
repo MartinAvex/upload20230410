@@ -6,6 +6,8 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * excel poi 通用工具类
@@ -116,8 +119,22 @@ public class PoiUtils {
         for (int sheetIndex = 0; sheetIndex < sheetListData.size(); sheetIndex++) {
 
             List<Map<String, Object>> dataset = sheetListData.get(sheetIndex);  // 需要导出的数据
+
+            List<String> dateList = dataset.stream().map(tmp -> tmp.get("date")).map(Object::toString).distinct().collect(Collectors.toList());
+            Map<String, CellStyle> bgMap = new HashMap<>();
+            for (int i = 0; i < dateList.size(); i++) {
+                if (i % 3 == 1) {
+                    bgMap.put(dateList.get(i), getCellStyle(workbook, HSSFColor.LIGHT_GREEN.index));
+                } else if (i % 3 == 2) {
+                    bgMap.put(dateList.get(i), getCellStyle(workbook, HSSFColor.LIGHT_ORANGE.index));
+                } else {
+                    bgMap.put(dateList.get(i), getCellStyle(workbook, HSSFColor.LIGHT_YELLOW.index));
+                }
+            }
+
             Sheet sheet = workbook.createSheet();
             sheet.setColumnWidth(1, 256*35+184);
+            sheet.setColumnWidth(2, 256*30+184);
             if (sheetNames != null) {
                 workbook.setSheetName(sheetIndex, sheetNames.get(sheetIndex));
             }
@@ -147,7 +164,7 @@ public class PoiUtils {
                 for (int j = 0; j < headKeys.size(); j++) {
 
                     Cell cell = row.createCell(j);
-                    cell.setCellStyle(cellStyle);
+                    cell.setCellStyle(bgMap.get(data.get("date").toString()));
                     String headKey = headKeys.get(j);
                     Object value = data.get(headKey);
                     String textVal = null;
@@ -171,7 +188,19 @@ public class PoiUtils {
 
 
 
-
+    private static CellStyle getCellStyle(Workbook wb, Short color) {
+        CellStyle style = wb.createCellStyle();
+        style.setFillForegroundColor(color);// 设置背景色
+        style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        style.setBorderBottom(HSSFCellStyle.BORDER_THIN); // 下边框
+        style.setBorderLeft(HSSFCellStyle.BORDER_THIN);// 左边框
+        style.setBorderTop(HSSFCellStyle.BORDER_THIN);// 上边框
+        style.setBorderRight(HSSFCellStyle.BORDER_THIN);// 右边框
+        Font font = wb.createFont();
+        style.setFont(font);
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        return style;
+    }
 
 
 
@@ -186,6 +215,10 @@ public class PoiUtils {
         cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
         cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
         cellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN); // 下边框
+        cellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);// 左边框
+        cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);// 上边框
+        cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);// 右边框
         Font font = workbook.createFont();
         font.setFontHeightInPoints((short) 11);
         font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);

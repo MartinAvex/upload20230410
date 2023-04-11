@@ -191,7 +191,8 @@
 		}
 
 		$('.download-btn').click(function() {
-			window.location.href = '/api/generation/download'
+			var createDate = $('#createDate').val();
+			window.location.href = '/api/generation/download?createDate=' + createDate;
 		});
 
 		window.refresh = function (param) {
@@ -215,7 +216,8 @@
 			});
 
 			$('.download-btn').click(function() {
-				window.location.href = '/api/generation/download'
+				var createDate = $('#createDate').val();
+				window.location.href = '/api/generation/download?createDate=' + createDate;
 			});
 
 			upload.render({

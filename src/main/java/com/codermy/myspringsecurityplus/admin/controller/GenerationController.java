@@ -77,17 +77,19 @@ public class GenerationController {
     @ApiOperation(value = "突变数据导出")
     @PreAuthorize("hasAnyAuthority('generation:list')")
     @MyLog("突变数据导出")
-    public void download(HttpServletResponse response) throws IOException {
-        List<GenerationDto> list = generationService.getList();
+    public void download(HttpServletResponse response, String createDate) throws IOException {
+        List<GenerationDto> list = generationService.getList(createDate);
         List<Map<String, Object>> dataList = list.stream().map(e -> {
             HashMap<String, Object> map = new HashMap<>();
             map.put("name", e.getName());
             map.put("gene", e.getGeneration());
+            map.put("date", e.getCreateDate());
             return map;
         }).collect(Collectors.toList());
         Map<String, String> header = new LinkedHashMap<>();
         header.put("name", "姓名");
         header.put("gene", "基因序列");
+        header.put("date", "导入时间");
         PoiUtils.writeExcel(response, "突变数据.xlsx",header ,dataList);
     }
 

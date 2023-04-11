@@ -19,6 +19,7 @@ public class GenerationDto implements Serializable {
 
     private String generation;
 
+    private String createDate;
 
 
 }

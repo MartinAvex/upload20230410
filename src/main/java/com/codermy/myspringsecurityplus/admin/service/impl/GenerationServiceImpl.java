@@ -36,8 +36,16 @@ public class GenerationServiceImpl implements GenerationService {
     private GenerationDao generationDao;
 
     @Override
-    public List<GenerationDto> getList() {
-        return generationDao.getList();
+    public List<GenerationDto> getList(String createDate) {
+        String start = "",  end = "";
+        if (StringUtils.isNotEmpty(createDate)) {
+            String[] dateArr = createDate.replace(" ", "").split("~");
+            start = dateArr[0];
+            end = dateArr[1];
+        } else {
+            start = end = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        }
+        return generationDao.getList(start, end);
     }
 
     @Override
@@ -61,7 +69,7 @@ public class GenerationServiceImpl implements GenerationService {
             return Result.error().message("没有上传文件，请核实！");
         }
         //先删除历史数据
-        generationDao.deleteHistory();
+//        generationDao.deleteHistory();
 
         try {
             List<MyGeneration> generationList = PoiUtils.readExcel(file, (lineNum, rows) -> {
