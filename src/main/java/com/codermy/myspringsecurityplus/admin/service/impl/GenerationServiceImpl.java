@@ -48,6 +48,8 @@ public class GenerationServiceImpl implements GenerationService {
             String[] dateArr = createDate.replace(" ", "").split("~");
             start = dateArr[0];
             end = dateArr[1];
+        } else {
+            start = end = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         }
         List<MyGeneration> list = generationDao.getGenerationList(start, end);
         return Result.ok().count(page.getTotal()).data(list).code(ResultCode.TABLE_SUCCESS);
