@@ -95,4 +95,10 @@ public class GenerationServiceImpl implements GenerationService {
     public Integer batchRemove() {
         return generationDao.deleteHistory();
     }
+
+    @Override
+    public Integer clearDataByDate(String date) {
+        return generationDao.clearDataByDate(date);
+    }
+
 }

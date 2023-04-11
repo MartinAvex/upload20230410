@@ -34,8 +34,11 @@
 		</foreach>
 	</insert>
 
-	<delete id="deleteHistory" parameterType="integer">
+	<delete id="deleteHistory">
 		delete from my_generation
+	</delete>
+	<delete id="clearDataByDate" parameterType="string">
+		delete from my_generation where create_date &lt;= #{date}
 	</delete>
 
 </mapper>

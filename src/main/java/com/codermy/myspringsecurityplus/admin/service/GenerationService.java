@@ -21,5 +21,6 @@ public interface GenerationService {
 
     Result<MyGeneration> importData(MultipartFile file);
     Integer batchRemove();
+    Integer clearDataByDate(String date);
 
 }
