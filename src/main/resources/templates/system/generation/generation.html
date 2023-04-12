@@ -73,7 +73,7 @@
 			]
 		]
 
-		var tableIns =table.render({
+		let tableIns =table.render({
 			elem: '#generation-table',
 			url: '/api/generation',
 			page: true ,
@@ -93,24 +93,6 @@
 
 		});
 
-		window.upload = upload.render({
-			elem: "#importData",//导入id
-			url: "/api/generation/importData",
-			accept: "file",
-			exts: 'xls|xlsx|xlsm|xlt|xltx|xltm',
-			before: function(obj) {
-				layer.msg('文件上传中...', {
-					icon: 16,
-					shade: 0.01,
-					time: 0
-				})
-			},
-			done: function (res) {
-				layer.close(layer.msg());//关闭上传提示窗口
-				table.reload('generation-table');
-			}
-		});
-
 		table.on('tool(generation-table)', function(obj) {
 			if (obj.event === 'remove') {
 				window.remove(obj);
@@ -124,15 +106,11 @@
 				window.refresh();
 			} else if (obj.event === 'batchRemove') {
 				window.batchRemove(obj);
-			} else if (obj.event === 'download') {
-				window.download(obj);
-			} else {
-				window.upload();
 			}
 		});
 		form.on('submit(generation-query)', function(data){
-			var formData = data.field;
-			var createDate = formData.createDate;
+			let formData = data.field;
+			let createDate = formData.createDate;
 			tableIns.reload({
 				page: {
 					curr: 1 //重新从第 1 页开始
@@ -142,7 +120,11 @@
 					//可传多个参数到后台...  ，分隔
 				},
 				url: '/api/generation', //后台做模糊搜索接口路径
-				method: 'get'
+				method: 'get',
+				done: function () {
+					//重新绑定，upload方法
+					bindTableToolbarFunction();
+				}
 			});
 			return false;
 		});
@@ -178,8 +160,8 @@
 			});
 		}
 
-		window.dpwnload = $('.download-btn').click(function() {
-			var createDate = $('#createDate').val();
+		$('.download-btn').click(function() {
+			let createDate = $('#createDate').val();
 			window.location.href = '/api/generation/download?createDate=' + createDate;
 		});
 
@@ -189,59 +171,7 @@
 
 		//table.reload()之后，toolbar按钮失效，toolbar事件重新绑定
 		function bindTableToolbarFunction(){
-			let upload = layui.upload
-
-			table.on('toolbar(generation-table)', function (obj) {
-				if (obj.event === 'add') {
-					window.add();
-				} else if (obj.event === 'refresh') {
-					window.refresh();
-				} else if (obj.event === 'batchRemove') {
-					window.batchRemove(obj);
-				} else if (obj.event === 'download') {
-					window.download(obj);
-				} else {
-					window.upload();
-				}
-			});
-
-			window.download = $('.download-btn').click(function() {
-				var createDate = $('#createDate').val();
-				window.location.href = '/api/generation/download?createDate=' + createDate;
-			});
-
-			window.batchRemove = function (obj) {
-				layer.confirm('确定要删除这些突变数据', {
-					icon: 3,
-					title: '提示'
-				}, function (index) {
-					layer.close(index);
-					let loading = layer.load();
-					$.ajax({
-						url:  "/api/generation/batchRemove",
-						dataType: 'json',
-						type: 'delete',
-						success: function (result) {
-							layer.close(loading);
-							if (result.success) {
-								layer.msg(result.msg, {
-									icon: 1,
-									time: 1000
-								}, function () {
-									table.reload('generation-table');
-								});
-							} else {
-								layer.msg(result.msg, {
-									icon: 2,
-									time: 1000
-								});
-							}
-						}
-					})
-				});
-			}
-
-			window.upload = upload.render({
+			upload.render({
 				elem: "#importData",//导入id
 				url: "/api/generation/importData",
 				accept: "file",
@@ -257,6 +187,10 @@
 					layer.close(layer.msg());//关闭上传提示窗口
 					table.reload('generation-table');
 				}
+			});
+			$('.download-btn').click(function() {
+				let createDate = $('#createDate').val();
+				window.location.href = '/api/generation/download?createDate=' + createDate;
 			});
 		}
 
