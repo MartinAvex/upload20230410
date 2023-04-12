@@ -1,9 +1,11 @@
 package com.codermy.myspringsecurityplus.admin.service.impl;
 
 import com.codermy.myspringsecurityplus.admin.dao.GenerationDao;
-import com.codermy.myspringsecurityplus.admin.dto.GenerationDto;
 import com.codermy.myspringsecurityplus.admin.entity.MyGeneration;
+import com.codermy.myspringsecurityplus.admin.request.ConditionParameter;
+import com.codermy.myspringsecurityplus.admin.request.GenerationRequest;
 import com.codermy.myspringsecurityplus.admin.service.GenerationService;
+import com.codermy.myspringsecurityplus.common.utils.PageTableRequest;
 import com.codermy.myspringsecurityplus.common.utils.PoiUtils;
 import com.codermy.myspringsecurityplus.common.utils.Result;
 import com.codermy.myspringsecurityplus.common.utils.ResultCode;
@@ -13,15 +15,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @Author: Xavier.wu
@@ -32,34 +31,19 @@ import java.util.stream.Collectors;
 @Service
 public class GenerationServiceImpl implements GenerationService {
 
+    private static final String DEFAULT_SORT_FIELD = "create_date";
     @Autowired
     private GenerationDao generationDao;
 
     @Override
-    public List<GenerationDto> getList(String createDate) {
-        String start = "",  end = "";
-        if (StringUtils.isNotEmpty(createDate)) {
-            String[] dateArr = createDate.replace(" ", "").split("~");
-            start = dateArr[0];
-            end = dateArr[1];
+    public Result<MyGeneration> getGenerationList(PageTableRequest pageTable, GenerationRequest param) {
+        Page page;
+        if (Objects.isNull(pageTable)) {
+            page = PageHelper.offsetPage(0, Integer.MAX_VALUE);
         } else {
-            start = end = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            page = PageHelper.offsetPage(pageTable.getOffset(), pageTable.getLimit());
         }
-        return generationDao.getList(start, end);
-    }
-
-    @Override
-    public Result<MyGeneration> getGenerationList(Integer offectPosition, Integer limit, String createDate) {
-        Page page = PageHelper.offsetPage(offectPosition,limit);
-        String start = "",  end = "";
-        if (StringUtils.isNotEmpty(createDate)) {
-            String[] dateArr = createDate.replace(" ", "").split("~");
-            start = dateArr[0];
-            end = dateArr[1];
-        } else {
-            start = end = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        }
-        List<MyGeneration> list = generationDao.getGenerationList(start, end);
+        List<MyGeneration> list = generationDao.getGenerationList(getParameter(param));
         return Result.ok().count(page.getTotal()).data(list).code(ResultCode.TABLE_SUCCESS);
     }
 
@@ -68,8 +52,6 @@ public class GenerationServiceImpl implements GenerationService {
         if (Objects.isNull(file)) {
             return Result.error().message("没有上传文件，请核实！");
         }
-        //先删除历史数据
-//        generationDao.deleteHistory();
 
         try {
             List<MyGeneration> generationList = PoiUtils.readExcel(file, (lineNum, rows) -> {
@@ -94,6 +76,45 @@ public class GenerationServiceImpl implements GenerationService {
     @Override
     public Integer batchRemove(String date) {
         return generationDao.deleteHistory(date);
+    }
+
+    private ConditionParameter getParameter(GenerationRequest param) {
+        String start = "",  end = "";
+        if (StringUtils.isNotEmpty(param.getCreateDate())) {
+            String[] dateArr = param.getCreateDate().replace(" ", "").split("~");
+            start = dateArr[0];
+            end = dateArr[1];
+        } else {
+            start = end = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        }
+
+        return ConditionParameter
+                .builder()
+                .start(start)
+                .end(end)
+                .sortField(characterConvert(param.getField()))
+                .order(StringUtils.isEmpty(param.getOrder()) ? "asc" : param.getOrder())
+                .build();
+    }
+
+    private String characterConvert(String field) {
+
+        if (StringUtils.isEmpty(field)) {
+            return DEFAULT_SORT_FIELD;
+        }
+
+        Pattern  pattern = Pattern.compile("[A-Z]");
+        StringBuilder builder = new StringBuilder(field);
+        Matcher matcher = pattern.matcher(field);
+        int i=0;
+        while (matcher.find()) {
+            builder.replace(matcher.start()+i, matcher.end()+i, "_"+matcher.group().toLowerCase());
+            i++;
+        }
+        if('_' == builder.charAt(0)){
+            builder.deleteCharAt(0);
+        }
+        return builder.toString();
     }
 
 }

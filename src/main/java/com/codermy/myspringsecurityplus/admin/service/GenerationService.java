@@ -1,12 +1,10 @@
 package com.codermy.myspringsecurityplus.admin.service;
 
-import com.codermy.myspringsecurityplus.admin.dto.GenerationDto;
 import com.codermy.myspringsecurityplus.admin.entity.MyGeneration;
+import com.codermy.myspringsecurityplus.admin.request.GenerationRequest;
+import com.codermy.myspringsecurityplus.common.utils.PageTableRequest;
 import com.codermy.myspringsecurityplus.common.utils.Result;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * @Author: Xavier.wu
@@ -16,9 +14,7 @@ import java.util.List;
  */
 public interface GenerationService {
 
-    List<GenerationDto> getList(String createDate);
-    Result<MyGeneration> getGenerationList(Integer offectPosition, Integer limit, String createDate);
-
+    Result<MyGeneration> getGenerationList(PageTableRequest pageTable, GenerationRequest param);
     Result<MyGeneration> importData(MultipartFile file);
     Integer batchRemove(String date);
 

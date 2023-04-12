@@ -1,8 +1,7 @@
 package com.codermy.myspringsecurityplus.admin.controller;
 
-
-import com.codermy.myspringsecurityplus.admin.dto.GenerationDto;
 import com.codermy.myspringsecurityplus.admin.entity.MyGeneration;
+import com.codermy.myspringsecurityplus.admin.request.GenerationRequest;
 import com.codermy.myspringsecurityplus.admin.service.GenerationService;
 import com.codermy.myspringsecurityplus.common.utils.PageTableRequest;
 import com.codermy.myspringsecurityplus.common.utils.PoiUtils;
@@ -48,9 +47,9 @@ public class GenerationController {
     @ApiOperation(value = "突变列表")
     @PreAuthorize("hasAnyAuthority('generation:list')")
     @MyLog("查询突变数据")
-    public Result<MyGeneration> generationList(PageTableRequest pageTableRequest, String createDate) {
+    public Result<MyGeneration> generationList(PageTableRequest pageTableRequest, GenerationRequest param) {
         pageTableRequest.countOffset();
-        return generationService.getGenerationList(pageTableRequest.getOffset(), pageTableRequest.getLimit(), createDate);
+        return generationService.getGenerationList(pageTableRequest, param);
     }
 
     @PostMapping(value = "/importData", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -77,8 +76,9 @@ public class GenerationController {
     @ApiOperation(value = "突变数据导出")
     @PreAuthorize("hasAnyAuthority('generation:list')")
     @MyLog("突变数据导出")
-    public void download(HttpServletResponse response, String createDate) throws IOException {
-        List<GenerationDto> list = generationService.getList(createDate);
+    public void download(HttpServletResponse response, GenerationRequest param) throws IOException {
+        Result<MyGeneration> result = generationService.getGenerationList(null, param);
+        List<MyGeneration> list = result.getData();
         List<Map<String, Object>> dataList = list.stream().map(e -> {
             HashMap<String, Object> map = new HashMap<>();
             map.put("name", e.getName());

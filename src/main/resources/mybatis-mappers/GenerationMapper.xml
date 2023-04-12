@@ -4,18 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.codermy.myspringsecurityplus.admin.dao.GenerationDao">
 
-
-	<select id="getList" resultType="com.codermy.myspringsecurityplus.admin.dto.GenerationDto">
-		select name,generation,create_date from my_generation
-		<where>
-			<if test="start != null and start != ''">
-				AND create_date &gt;= CONCAT(#{start}, ' 00:00:00')
-			</if>
-			<if test="end != null and end != ''">
-				AND create_date &lt;= CONCAT(#{end}, ' 00:00:00')
-			</if>
-		</where>
-	</select>
     <select id="getGenerationList" resultType="com.codermy.myspringsecurityplus.admin.entity.MyGeneration">
 		select id,name,generation,create_date from my_generation
 		<where>
@@ -26,6 +14,9 @@
 				AND create_date &lt;= CONCAT(#{end}, ' 00:00:00')
 			</if>
 		</where>
+		<if test="sortField != null and sortField != '' and order != null and order != ''">
+			order by ${sortField} ${order}
+		</if>
 	</select>
 	<insert id="batchSave" keyProperty="id" useGeneratedKeys="true">
 		insert into my_generation(name, generation, create_date) values

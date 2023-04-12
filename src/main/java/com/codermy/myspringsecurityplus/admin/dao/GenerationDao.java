@@ -1,11 +1,8 @@
 package com.codermy.myspringsecurityplus.admin.dao;
 
-import com.codermy.myspringsecurityplus.admin.dto.GenerationDto;
 import com.codermy.myspringsecurityplus.admin.entity.MyGeneration;
+import com.codermy.myspringsecurityplus.admin.request.ConditionParameter;
 import org.apache.ibatis.annotations.Mapper;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -17,8 +14,7 @@ import java.util.List;
 @Mapper
 public interface GenerationDao {
 
-    List<GenerationDto> getList(String start, String end);
-    List<MyGeneration> getGenerationList(String start, String end);
+    List<MyGeneration> getGenerationList(ConditionParameter condition);
 
     int batchSave(List<MyGeneration> myGenerationList);
     int deleteHistory(String date);

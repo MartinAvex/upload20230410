@@ -69,7 +69,7 @@
 				{title: '主键', field: 'id', align:'center', width:100},
 				{title: '姓名', field: 'name', align:'center'},
 				{title: '基因序列', field: 'generation', align:'center'},
-				{title: '创建时间', field: 'createDate', align:'center', templet: "<div>{{layui.util.toDateString(d.createDate, 'yyyy-MM-dd')}}</div>"}
+				{title: '创建时间', field: 'createDate', sort: true, align:'center', templet: "<div>{{layui.util.toDateString(d.createDate, 'yyyy-MM-dd')}}</div>"}
 			]
 		]
 
@@ -99,6 +99,16 @@
 			} else if (obj.event === 'edit') {
 				window.edit(obj);
 			}
+		});
+
+		table.on('sort(generation-table)', function (obj) {
+			table.reload('generation-table', {
+				initSort: obj,
+				where: {
+					field: obj.field,
+					order: obj.type
+				}
+			});
 		});
 
 		table.on('toolbar(generation-table)', function (obj) {
