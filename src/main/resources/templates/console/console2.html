@@ -21,10 +21,16 @@
 							<div class="layui-card-body">
 								<div class="layui-row layui-col-space10">
 									<div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
-										<div class="pear-card" data-id="home1" data-title="主页" data-url="https://www.baidu.com">
+										<div class="pear-card" data-id="home1" data-title="主页" data-url="/api/console">
 											<i class="layui-icon layui-icon-home"></i>
 										</div>
 										<span class="pear-card-title">主页</span>
+									</div>
+									<div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+										<div class="pear-card" data-id="home4" data-title="突变管理" data-url="/api/generation/index">
+											<i class="layui-icon layui-icon-console"></i>
+										</div>
+										<span class="pear-card-title">突变管理</span>
 									</div>
 									<div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
 										<div class="pear-card" data-id="home2" data-title="弹层" data-url="https://www.baidu.com">
@@ -43,12 +49,6 @@
 											<i class="layui-icon layui-icon-camera"></i>
 										</div>
 										<span class="pear-card-title">相机</span>
-									</div>
-									<div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
-										<div class="pear-card" data-id="home4" data-title="表单" data-url="https://www.baidu.com">
-											<i class="layui-icon layui-icon-console"></i>
-										</div>
-										<span class="pear-card-title">表单</span>
 									</div>
 									<div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
 										<div class="pear-card" data-id="home5" data-title="安全" data-url="https://www.baidu.com">
@@ -140,7 +140,8 @@
 					carousel = layui.carousel;
 
 				let cols = [
-					[{
+					[
+						{
 							type: 'checkbox'
 						},
 						{
