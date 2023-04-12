@@ -37,7 +37,7 @@ public class AdminController {
     @GetMapping("/console")
     @ApiOperation(value = "后台首页")
     public String console(){
-        return "console/console1";
+        return "console/console2";
     }
 
     @GetMapping("/form/build")
