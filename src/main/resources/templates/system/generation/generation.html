@@ -42,11 +42,11 @@
 </div>
 
 <script type="text/html" id="generation-toolbar">
-	<button class="layui-btn layui-btn-sm layui-btn" data-type="import" id="importData" onclick="javascript:return false;">
+	<button class="layui-btn layui-btn-sm layui-btn" data-type="import" id="importData" lay-event="upload" onclick="javascript:return false;">
 		<i class="layui-icon layui-icon-upload"></i>
 		突变数据上传
 	</button>
-	<button type="button" class="layui-btn layui-btn-sm download-btn">
+	<button type="button" class="layui-btn layui-btn-sm download-btn" lay-event="download">
 		<i class="layui-icon layui-icon-layim-download"></i>
 		突变数据下载
 	</button>
@@ -56,26 +56,17 @@
 	</button>
 </script>
 <script>
-	layui.use(['table', 'form', 'jquery', 'dtree', 'upload', 'laydate'], function () {
+	layui.use(['table', 'form', 'jquery', 'dtree', 'laydate', 'upload'], function () {
 		let table = layui.table;
 		let form = layui.form;
 		let $ = layui.jquery;
-		let upload = layui.upload;
 		let laydate = layui.laydate;
-
-		laydate.render({
-			elem: '#createDate',
-			type: 'date',
-			range: '~',
-			calendar: true,
-			btns: ['clear', 'confirm', 'now']
-		});
+		let upload = layui.upload;
 
 		let cols = [
 			[
 				{type:'checkbox'},
 				{title: '主键', field: 'id', align:'center', width:100},
-				// {title: '主键', field: 'id', align:'center', width:100, style:'display:none'},
 				{title: '姓名', field: 'name', align:'center'},
 				{title: '基因序列', field: 'generation', align:'center'},
 				{title: '创建时间', field: 'createDate', align:'center', templet: "<div>{{layui.util.toDateString(d.createDate, 'yyyy-MM-dd')}}</div>"}
@@ -102,10 +93,9 @@
 
 		});
 
-		upload.render({
+		window.upload = upload.render({
 			elem: "#importData",//导入id
 			url: "/api/generation/importData",
-			method: "post",
 			accept: "file",
 			exts: 'xls|xlsx|xlsm|xlt|xltx|xltm',
 			before: function(obj) {
@@ -130,14 +120,14 @@
 		});
 
 		table.on('toolbar(generation-table)', function (obj) {
-			if (obj.event === 'add') {
-				window.add();
-			} else if (obj.event === 'refresh') {
+			if (obj.event === 'refresh') {
 				window.refresh();
 			} else if (obj.event === 'batchRemove') {
 				window.batchRemove(obj);
 			} else if (obj.event === 'download') {
 				window.download(obj);
+			} else {
+				window.upload();
 			}
 		});
 		form.on('submit(generation-query)', function(data){
@@ -152,7 +142,7 @@
 					//可传多个参数到后台...  ，分隔
 				},
 				url: '/api/generation', //后台做模糊搜索接口路径
-				method: 'post'
+				method: 'get'
 			});
 			return false;
 		});
@@ -188,7 +178,7 @@
 			});
 		}
 
-		$('.download-btn').click(function() {
+		window.dpwnload = $('.download-btn').click(function() {
 			var createDate = $('#createDate').val();
 			window.location.href = '/api/generation/download?createDate=' + createDate;
 		});
@@ -197,7 +187,7 @@
 			table.reload('generation-table');
 		}
 
-		//table.reload()之后，toolbar按钮失效，	toolbar事件重新绑定
+		//table.reload()之后，toolbar按钮失效，toolbar事件重新绑定
 		function bindTableToolbarFunction(){
 			let upload = layui.upload
 
@@ -210,15 +200,48 @@
 					window.batchRemove(obj);
 				} else if (obj.event === 'download') {
 					window.download(obj);
+				} else {
+					window.upload();
 				}
 			});
 
-			$('.download-btn').click(function() {
+			window.download = $('.download-btn').click(function() {
 				var createDate = $('#createDate').val();
 				window.location.href = '/api/generation/download?createDate=' + createDate;
 			});
 
-			upload.render({
+			window.batchRemove = function (obj) {
+				layer.confirm('确定要删除这些突变数据', {
+					icon: 3,
+					title: '提示'
+				}, function (index) {
+					layer.close(index);
+					let loading = layer.load();
+					$.ajax({
+						url:  "/api/generation/batchRemove",
+						dataType: 'json',
+						type: 'delete',
+						success: function (result) {
+							layer.close(loading);
+							if (result.success) {
+								layer.msg(result.msg, {
+									icon: 1,
+									time: 1000
+								}, function () {
+									table.reload('generation-table');
+								});
+							} else {
+								layer.msg(result.msg, {
+									icon: 2,
+									time: 1000
+								});
+							}
+						}
+					})
+				});
+			}
+
+			window.upload = upload.render({
 				elem: "#importData",//导入id
 				url: "/api/generation/importData",
 				accept: "file",
@@ -236,6 +259,15 @@
 				}
 			});
 		}
+
+		laydate.render({
+			elem: '#createDate',
+			type: 'date',
+			range: '~',
+			calendar: true,
+			btns: ['clear', 'confirm', 'now']
+		});
+
 	})
 </script>
 </body>
