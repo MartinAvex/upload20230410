@@ -28,9 +28,9 @@ public class MyGeneration implements Serializable {
 
     private String generation;
 
-    private LocalDate createDate;
+    private LocalDateTime createDate;
 
     public MyGeneration() {
-        createDate = LocalDate.now();
+        createDate = LocalDateTime.now();
     }
 }

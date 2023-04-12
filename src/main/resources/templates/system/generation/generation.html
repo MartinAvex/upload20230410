@@ -5,6 +5,13 @@
 	<title></title>
 	<header th:replace="header::html"></header>
 </head>
+<style>
+	.table-header-fixed {
+		top: 0;
+		position: fixed;
+		z-index: 999;
+	}
+</style>
 <body class="pear-container">
 <div class="layui-card">
 	<div class="layui-card-body">
@@ -20,13 +27,10 @@
 					<i class="layui-icon layui-icon-search"></i>
 					查询
 				</button>
-
 				<button type="reset" class="pear-btn pear-btn-md">
 					<i class="layui-icon layui-icon-refresh"></i>
 					重置
 				</button>
-
-				<label style="color: red; text-align: right">仅留存三天内的数据</label>
 			</div>
 		</form>
 	</div>
@@ -64,13 +68,16 @@
 		let upload = layui.upload;
 
 		let cols = [
-			[
-				{type:'checkbox'},
-				{title: '主键', field: 'id', align:'center', width:100},
-				{title: '姓名', field: 'name', align:'center'},
-				{title: '基因序列', field: 'generation', align:'center'},
-				{title: '创建时间', field: 'createDate', sort: true, align:'center', templet: "<div>{{layui.util.toDateString(d.createDate, 'yyyy-MM-dd')}}</div>"}
-			]
+				[
+					{title: '<label style="color: red">只保存三天内的数据，默认查询当天的数据</label>', colspan: 5}
+				],
+				[
+					{type:'checkbox'},
+					{title: '主键', field: 'id', align:'center', width:100},
+					{title: '姓名', field: 'name', align:'center'},
+					{title: '基因序列', field: 'generation', align:'center'},
+					{title: '创建时间', field: 'createDate', sort: true, align:'center', templet: "<div>{{layui.util.toDateString(d.createDate, 'yyyy-MM-dd HH:mm:ss')}}</div>"}
+				]
 		]
 
 		let tableIns =table.render({
@@ -78,15 +85,22 @@
 			url: '/api/generation',
 			page: true ,
 			cols: cols ,
-			skin: 'line',
+			even: true,
 			toolbar: '#generation-toolbar',
 			defaultToolbar: [{
 				layEvent: 'refresh',
 				title: '刷新',
 				icon: 'layui-icon-refresh',
 			}, 'filter'],
-			done: function (value, date, endDate) {
-				// $("[data-field='id']").css('display', 'none');
+			done: function () {
+				let headerTop = $('.layui-table-header').offset().top; //获取表格头到文档顶部的距离
+				$(window).scroll(function () {
+					if ((headerTop - $(window).scrollTop()) < 0) { //超过了
+						$('.layui-table-header').addClass('table-header-fixed'); //添加样式，固定住表头
+					} else { //没超过
+						$('.layui-table-header').removeClass('table-header-fixed'); //移除样式
+					}
+				});
 				//重新绑定，upload方法
 				bindTableToolbarFunction();
 			}

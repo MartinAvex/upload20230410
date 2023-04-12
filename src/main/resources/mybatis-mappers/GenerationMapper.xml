@@ -11,7 +11,7 @@
 				AND create_date &gt;= CONCAT(#{start}, ' 00:00:00')
 			</if>
 			<if test="end != null and end != ''">
-				AND create_date &lt;= CONCAT(#{end}, ' 00:00:00')
+				AND create_date &lt;= CONCAT(#{end}, ' 23:59:59')
 			</if>
 		</where>
 		<if test="sortField != null and sortField != '' and order != null and order != ''">
