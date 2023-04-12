@@ -36,9 +36,11 @@
 
 	<delete id="deleteHistory">
 		delete from my_generation
-	</delete>
-	<delete id="clearDataByDate" parameterType="string">
-		delete from my_generation where create_date &lt;= #{date}
+		<where>
+			<if test="date != null and date != ''">
+				AND create_date &lt;= #{date}
+			</if>
+		</where>
 	</delete>
 
 </mapper>

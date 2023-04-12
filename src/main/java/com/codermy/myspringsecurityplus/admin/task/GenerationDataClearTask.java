@@ -23,7 +23,7 @@ public class GenerationDataClearTask {
     @Scheduled(cron = "0 0 0 0/1 * ?")
     public void handler() {
         String now = LocalDate.now().plusDays(-3L).format(DateTimeFormatter.ofPattern("yyyy-MM-dd 00:00:00"));
-        generationService.clearDataByDate(now);
+        generationService.batchRemove(now);
     }
 
 }

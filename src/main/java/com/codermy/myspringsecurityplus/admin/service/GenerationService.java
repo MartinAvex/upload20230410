@@ -20,7 +20,6 @@ public interface GenerationService {
     Result<MyGeneration> getGenerationList(Integer offectPosition, Integer limit, String createDate);
 
     Result<MyGeneration> importData(MultipartFile file);
-    Integer batchRemove();
-    Integer clearDataByDate(String date);
+    Integer batchRemove(String date);
 
 }

@@ -68,7 +68,7 @@ public class GenerationController {
     @PreAuthorize("hasAnyAuthority('generation:list')")
     @MyLog("突变数据删除")
     public Result<Integer> batchRemove() {
-        generationService.batchRemove();
+        generationService.batchRemove(null);
         return Result.ok();
     }
 

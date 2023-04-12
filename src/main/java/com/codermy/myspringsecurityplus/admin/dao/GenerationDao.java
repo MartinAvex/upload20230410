@@ -18,10 +18,9 @@ import java.util.List;
 public interface GenerationDao {
 
     List<GenerationDto> getList(String start, String end);
-    int clearDataByDate(String date);
     List<MyGeneration> getGenerationList(String start, String end);
 
     int batchSave(List<MyGeneration> myGenerationList);
-    int deleteHistory();
+    int deleteHistory(String date);
 
 }
