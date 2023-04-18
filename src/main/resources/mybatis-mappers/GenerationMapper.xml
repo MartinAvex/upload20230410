@@ -15,7 +15,7 @@
 			</if>
 		</where>
 		<if test="sortField != null and sortField != '' and order != null and order != ''">
-			order by ${sortField} ${order}
+			order by id asc, ${sortField} ${order}
 		</if>
 	</select>
 	<insert id="batchSave" keyProperty="id" useGeneratedKeys="true">
