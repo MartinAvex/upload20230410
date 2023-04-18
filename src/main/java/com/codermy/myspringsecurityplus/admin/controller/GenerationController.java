@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -83,7 +84,7 @@ public class GenerationController {
             HashMap<String, Object> map = new HashMap<>();
             map.put("name", e.getName());
             map.put("gene", e.getGeneration());
-            map.put("date", e.getCreateDate());
+            map.put("date", e.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             return map;
         }).collect(Collectors.toList());
         Map<String, String> header = new LinkedHashMap<>();
