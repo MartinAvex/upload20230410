@@ -1,6 +1,7 @@
 package com.codermy.myspringsecurityplus.security.config;
 
 
+import com.codermy.myspringsecurityplus.common.filter.XssFilter;
 import com.codermy.myspringsecurityplus.security.UserDetailsServiceImpl;
 import com.codermy.myspringsecurityplus.security.filter.JwtAuthenticationTokenFilter;
 import com.codermy.myspringsecurityplus.security.filter.VerifyCodeFilter;
@@ -20,6 +21,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CsrfFilter;
 
 /**
  * @author codermy
@@ -105,6 +107,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 // .sessionManagement()// 基于token，所以不需要session
                 // .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 // .and()
+                //XSS过滤器
+                .addFilterAfter(new XssFilter(), CsrfFilter.class)
                 //未登陆时返回 JSON 格式的数据给前端
                 .httpBasic().authenticationEntryPoint(restAuthenticationEntryPoint)
                 .and()
