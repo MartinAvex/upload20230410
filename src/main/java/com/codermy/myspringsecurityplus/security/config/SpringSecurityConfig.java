@@ -108,7 +108,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 // .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 // .and()
                 //XSS过滤器
-                .addFilterAfter(new XssFilter(), CsrfFilter.class)
+                //.addFilterAfter(new XssFilter(), CsrfFilter.class)
                 //未登陆时返回 JSON 格式的数据给前端
                 .httpBasic().authenticationEntryPoint(restAuthenticationEntryPoint)
                 .and()

@@ -45,6 +45,6 @@ public interface LogDao {
      * 删除所有日志
      * @param type 日志类型
      */
-    @Delete("delete from my_log where type = #{type}")
+    @Delete("delete from my_log")
     void delAllByInfo(String type);
 }
